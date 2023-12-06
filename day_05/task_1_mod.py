@@ -23,22 +23,6 @@ minimum = float("inf")
 for seed in seeds:
     key = seed
     for map in maps:
-        # low, high = 0, len(map) - 1
-        # closest_smaller_index = None
-
-        # while low <= high:
-        #     mid = (low + high) // 2
-
-        #     if map[mid][1] == key:
-        #         break
-
-        #     elif map[mid][1] < key:
-        #         low = mid + 1
-
-        #     else:
-        #         high = mid - 1
-        # if key < map[mid][2]:
-        #     key += map[mid][0]
         low, high = 0, len(map) - 1
         result_index = -1
 
