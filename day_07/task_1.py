@@ -31,12 +31,12 @@ rules = {
     ],
 }
 
-# Parse input
-data = []
+list_of_games = []
 for line in lines:
+    # Parse input
     line = line.strip()
-    cards = line.split(" ")
-    counter = Counter(cards[0])
+    cards_in_hand, bid = line.split(" ")
+    counter = Counter(cards_in_hand)
 
     strength = None
     freq = list(counter.values())
@@ -47,19 +47,15 @@ for line in lines:
             break
 
     value = 0
-    for i in cards[0]:
-        value = value * 20 + relative_strength[i]
+    for card in cards_in_hand:
+        value = value * 20 + relative_strength[card]
 
     ultimate_strength = strength * pow(20, 8) + value
-    data.append((ultimate_strength, int(cards[1])))
+    list_of_games.append((ultimate_strength, int(bid)))
 
-data.sort(key=lambda x: x[0])
-for i in data:
-    print(i)
+# sorting by strength
+list_of_games.sort(key=lambda x: x[0])
+
 sum = 0
-for i, game in enumerate(data, start=1):
-    sum += game[1] * i
-
-print(sum)
-# 252507641
-# 247032777
+for rank, (_, bid) in enumerate(list_of_games, start=1):
+    sum += bid * rank
