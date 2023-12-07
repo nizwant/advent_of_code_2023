@@ -7,7 +7,7 @@ relative_strength = {
     "A": 14,
     "K": 13,
     "Q": 12,
-    "J": 11,
+    "J": 1,
     "T": 10,
     "9": 9,
     "8": 8,
@@ -37,10 +37,15 @@ for line in lines:
     line = line.strip()
     cards_in_hand, bid = line.split(" ")
     counter = Counter(cards_in_hand)
+    J_number = counter.pop("J", 0)
 
     strength = None
     freq = list(counter.values())
-    freq.sort()
+    if freq:
+        freq.sort()
+        freq[-1] += J_number
+    else:
+        freq = [J_number]
     for key, value in rules.items():
         if value == freq:
             strength = key
