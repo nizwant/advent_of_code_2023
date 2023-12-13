@@ -7,9 +7,9 @@ with open("day_12/input.txt", "r") as file:
 def backtrack(index_list_q_m, list_of_lengths, sequence):
     if not index_list_q_m:
         rec = calculate(sequence)
-        return 1  # rec == list_of_lengths
+        return rec == list_of_lengths
 
-    acc = 1  # 0 counts the backtrack invocations
+    acc = 0
     sequence = sequence[: index_list_q_m[0]] + "#" + sequence[index_list_q_m[0] + 1 :]
     li = calculate(sequence[: index_list_q_m[0] + 1])
     if len(li) < 1 or (
