@@ -7,41 +7,30 @@ modified_data = []
 x, y = 0, 0
 min_x, min_y = 0, 0
 max_x, max_y = 0, 0
+aaa = 0
+
 for row in data:
-    for _ in range(int(row[1])):
-        modified_data.append((x, y, row[2]))
-        if row[0] == "R":
-            x += 1
-            max_x = max(max_x, x)
-        elif row[0] == "L":
-            x -= 1
-            min_x = min(min_x, x)
-        elif row[0] == "U":
-            y += 1
-            max_y = max(max_y, y)
-        elif row[0] == "D":
-            y -= 1
-            min_y = min(min_y, y)
+    old_x, old_y = x, y
+    aaa += int(row[1])
+    if row[0] == "R":
+        x += int(row[1])
+        max_x = max(max_x, x)
+    elif row[0] == "L":
+        x -= int(row[1])
+        min_x = min(min_x, x)
+    elif row[0] == "U":
+        y += int(row[1])
+        max_y = max(max_y, y)
+    elif row[0] == "D":
+        y -= int(row[1])
+        min_y = min(min_y, y)
+    modified_data.append((old_x, old_y, x, y))
 
-grid = [[0 for _ in range(max_x - min_x + 1)] for _ in range(max_y - min_y + 1)]
-for row in modified_data:
-    x, y = row[0] - min_x, row[1] - min_y
-    grid[y][x] = 1
-
-que = [((max_x - min_x) // 2, (max_y - min_y) // 2)]
-while que:
-    x, y = que.pop(0)
-    if x < 0 or y < 0 or x >= len(grid[0]) or y >= len(grid) or grid[y][x] == 1:
-        continue
-    if grid[y][x] == 0:
-        grid[y][x] = 1
-        que.append((x + 1, y))
-        que.append((x - 1, y))
-        que.append((x, y + 1))
-        que.append((x, y - 1))
 
 answer = 0
-for row in grid:
-    answer += sum(row)
+for row in modified_data:
+    answer += (row[0] - row[2]) * (row[1] + row[3])
+
+answer = abs(answer - aaa) // 2 + 1
 
 print(answer)
