@@ -1,27 +1,14 @@
 with open("day_20/input.txt", "r") as f:
     data = f.readlines()
 
-# data = [
-#     "broadcaster -> a, b, c",
-#     "%a -> b",
-#     "%b -> c",
-#     "%c -> inv",
-#     "&inv -> a",
-# ]
-# data = [
-#     "broadcaster -> a",
-#     "%a -> inv, con",
-#     "&inv -> b",
-#     "%b -> con",
-#     "&con -> output",
-# ]
-
+# create "set" of conjunction modules
 dict_of_conjunctions = {}
 for line in data:
     module_name, _ = line.strip().split(" -> ")
     if module_name[0] == "&":
         dict_of_conjunctions[module_name[1:]] = []
 
+# populate it with its input sources
 for line in data:
     module_name, module_neighbor = line.strip().split(" -> ")
     module_neighbor = module_neighbor.split(", ")
@@ -46,30 +33,37 @@ for line in data:
         module_type = "broadcaster"
     modules[module_name] = [module_state, module_neighbor, module_type]
 
+
 counter_h = 0
 counter_l = 0
-
 for _ in range(1000):
     counter_l += 1
     list_of_modules = [(i, "l", "broadcaster") for i in modules["broadcaster"][1]]
     while list_of_modules:
         module, signal_type, sender = list_of_modules.pop(0)
+
+        # counter of signals
         if signal_type == "h":
             counter_h += 1
         else:
             counter_l += 1
+
         if module not in modules:
             continue
         module_state, module_neighbor, module_type = modules[module]
+
+        # if flip-flop
         if module_type == "%" and signal_type == "h":
             continue
         if module_type == "%" and signal_type == "l":
-            if modules[module][0] == "off":
-                modules[module][0] = "on"
+            if module_state == "off":
+                module_state = "on"
                 list_of_modules.extend([(i, "h", module) for i in module_neighbor])
             else:
-                modules[module][0] = "off"
+                module_state = "off"
                 list_of_modules.extend([(i, "l", module) for i in module_neighbor])
+
+        # if conjunction
         if module_type == "&":
             if signal_type == "h":
                 module_state[sender] = True
@@ -79,5 +73,9 @@ for _ in range(1000):
                 list_of_modules.extend([(i, "l", module) for i in module_neighbor])
             else:
                 list_of_modules.extend([(i, "h", module) for i in module_neighbor])
-            modules[module][0] = module_state
-print(counter_h * counter_l)
+
+        # update module state
+        modules[module][0] = module_state
+
+solution = counter_h * counter_l
+print(solution)
